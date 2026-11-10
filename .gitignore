@@ -1,0 +1,8 @@
+# Archivo de variables privado
+.env
+scripts/.env
+
+# Claves privadas y certificados
+*.key
+*.pem
+*.crt
