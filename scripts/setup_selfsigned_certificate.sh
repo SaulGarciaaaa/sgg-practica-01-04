@@ -2,12 +2,6 @@
 
 set -e
 
-# Comprobar que se ejecuta como administrador
-if [ "$EUID" -ne 0 ]; then
-    echo "Ejecuta este script con sudo."
-    exit 1
-fi
-
 # Comprobar que Apache esta instalado
 if ! dpkg -s apache2 &> /dev/null; then
     echo "Apache no esta instalado."
@@ -82,8 +76,6 @@ echo "Configurando virtual hosts..."
 cp "$PROJECT_DIR/conf/$HTTP_CONF" /etc/apache2/sites-available/
 cp "$PROJECT_DIR/conf/$HTTPS_CONF" /etc/apache2/sites-available/
 
-# Sustituir los marcadores de las plantillas de Apache
-
 # Sustituir el dominio
 sed -i "s|__DOMAIN__|$DOMAIN|g" \
 "/etc/apache2/sites-available/$HTTP_CONF"
@@ -100,20 +92,19 @@ sed -i "s|__KEY_FILE__|$CERT_KEY|g" \
 "/etc/apache2/sites-available/$HTTPS_CONF"
 # Habilitar los modulos necesarios
 echo "Habilitando modulos SSL y Rewrite..."
-a2enmod ssl
-a2enmod rewrite
+sudo a2enmod ssl rewrite
 
 # Habilitar el sitio HTTPS
 echo "Habilitando sitio HTTPS..."
-a2ensite "$HTTPS_CONF"
+sudo a2ensite "$HTTPS_CONF"
 
 # Comprobar la configuracion antes de reiniciar
 echo "Comprobando configuracion de Apache..."
 
-apache2ctl configtest
+sudo apache2ctl configtest
 
 # Reiniciar Apache
 echo "Reiniciando Apache..."
-systemctl restart apache2
+sudo systemctl restart apache2
 
 echo "Certificado y configuracion HTTPS instalados correctamente."
