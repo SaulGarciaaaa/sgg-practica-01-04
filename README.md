@@ -295,6 +295,35 @@ En la imagen se peude ver la fecha de inicio de creación y fin de este
 <img width="618" height="37" alt="imagen" src="https://github.com/user-attachments/assets/c876aa3f-502d-4a52-998d-3a14c5308043" />
 Todos los scripts estan bien estructurados y demas archivos estan bien y funcionan correctamente
 
+#### 3. Variables introducidas en .env.example
+```bash
+
+# Datos del certificado
+COUNTRY="ES"
+STATE="Cantabria"
+LOCALITY="Torrelavega"
+ORGANIZATION="IES Miguel Herrero"
+ORGANIZATIONAL_UNIT="Informatica"
+COMMON_NAME="practica-https.test"
+EMAIL="admin@example.com"
+
+# Dominio e IP elastica
+DOMAIN="practica-https.test"
+ELASTIC_IP="18.210.39.46"
+
+# Validez del certificado
+DAYS=365
+
+# Rutas del certificado y clave
+CERT_FILE="/etc/ssl/certs/apache-selfsigned.crt"
+KEY_FILE="/etc/ssl/private/apache-selfsigned.key"
+
+# Rutas de configuracion Apache
+HTTP_CONF="/etc/apache2/sites-available/000-default.conf"
+HTTPS_CONF="/etc/apache2/sites-available/practica-https-ssl.conf"
+
+``
+
 ## 7. Configuración del certificado
 
 Se utiliza un certificado autofirmado para el dominio `practica-https.test`.
