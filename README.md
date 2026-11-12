@@ -10,13 +10,24 @@ Se crea una instancia EC2 utilizando Ubuntu Server LTS y el tipo de instancia in
 
 Se configura un Security Group con las siguientes reglas de entrada:
 
-| Servicio | Protocolo | Puerto |
-|---|---|---|
-| SSH | TCP | 22 |
-| HTTP | TCP | 80 |
-| HTTPS | TCP | 443 |
+| Servicio | Protocolo | Puerto | Uso |
+|---|---|---|---|
+| SSH | TCP | 22 | Utilizado para administrar Apache y ejecutar comandos, ejecutar comandos de git mediante protocolo SSH |
+| HTTP | TCP | 80 | Utilizado para poder utilizar Apache y redirige el tráfico automáticamente hacia HTTPS. |
+| HTTPS | TCP | 443 | Utilizado para emplear el certificado SSL/TLS y sincronizar el repositorio de git usando URL seguras |
+
+En Seguridad-> Grupos de Seguridad:
+
+<img width="1618" height="212" alt="imagen" src="https://github.com/user-attachments/assets/19e49c33-153a-45c9-875d-fbe0b730a2fc" />
+
+Utilizo el puerto
 
 También se crea una IP elástica y se asocia a la instancia.
+
+<img width="173" height="43" alt="imagen" src="https://github.com/user-attachments/assets/50c2f908-392a-4c0c-87e7-a77a65089add" />
+
+Esta es la ip elástica generada para esta práctica y que emplearé para la misma
+
 
 ## 3. Clonación del repositorio
 
@@ -48,6 +59,33 @@ El repositorio contiene los siguientes archivos:
 
 Este script automatiza la instalación de Apache.
 
+```bash
+
+#!/bin/bash
+set -e
+
+# Comprobar si Apache ya esta instalado
+if dpkg -s apache2 &> /dev/null; then
+    echo "Apache ya está instalado."
+    exit 0
+fi
+
+# Actualizar los repositorios
+echo "Actualizando paquetes..."
+apt-get update
+
+# Instalar Apache sin intervencion del usuario
+echo "Instalando Apache..."
+DEBIAN_FRONTEND=noninteractive apt-get install -y apache2
+
+# Habilitar e iniciar el servicio
+echo "Habilitando e iniciando Apache..."
+systemctl enable --now apache2
+
+echo "Apache instalado y arrancado correctamente."
+
+```
+
 Sus funciones son:
 
 - Comprobar mediante `dpkg -s apache2` si Apache ya está instalado.
@@ -60,6 +98,21 @@ Ejecución:
 ```bash
 sudo ./scripts/install_apache.sh
 ```
+
+#### 1. Validación y evidencia de la instación de apache
+
+<img width="651" height="309" alt="imagen" src="https://github.com/user-attachments/assets/ecbcdb52-8f4c-44eb-a16c-a192ea708a85" />
+
+Tal como se ve en la imagen se puede ver que Apache esta instalado , operativo y activado en estado (runing) y
+enabled tal y como se pide en la practica 
+
+#### 2. Validación y evidencia del Script
+
+<img width="635" height="34" alt="imagen" src="https://github.com/user-attachments/assets/f58d4d1f-4669-4884-aac9-b45b49b709ed" />
+
+Como se puede ver en la imagen la ejecución del script es correcta y muestra el mensaje de salida por defecto porque
+en este ya se ha validado que esta instalado Apache.
+
 
 ## 6. Script setup_selfsigned_certificate.sh
 
